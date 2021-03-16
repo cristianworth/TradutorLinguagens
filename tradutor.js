@@ -1,23 +1,22 @@
 const obj = {
-  "(se)(.*)(entao)": (x) => {
-    return x
-      .replace(/(se)(.*)(entao)/gm, (x) => ` IF ( ${x} ) { `)
-      .replace(/(se)|(entao)/gm, "");
-  },
-  "(senao)": (x) => {
-    return x.replace(/(senao)/gm, (x) => ` } ELSE { `);
-  },
-  "(fimse)|(fimpara)": (x) => {
-    return x.replace(/(fimse)|(fimpara)/gm, (x) => ` } `);
-  },
-  "(escreval)": (x) => {
-    return x.trim().replace(/(escreval)/gm, (x) => ` console.log`);
-  },
-  "(para)(.*)(de)(.*)(ate)(.*)(faca)": (x) => {
-    [, , k, , i, , j] = x.match(/(para)(.*)(de)(.*)(ate)(.*)(faca)/);
-    return (s = ` FOR ( ${k} = ${i}; ${k} <= ${j} ) {`);
-  },
-};
+	"(se)(.*)(entao)": (x) => { 
+		[,,y] = x.match(/(se)(.*)(entao)/)
+		return ` IF ( ${y} ) { ` 
+	},
+	"(senao)": (x) => { 
+		return ` } ELSE { ` 
+	},
+	"(fimse)|(fimpara)": (x) => { 
+		return ` } ` 
+	},
+	"(escreval)|(escreva)": (x) => { 
+		return ` console.log`
+	},
+	"(para)(.*)(de)(.*)(ate)(.*)(faca)":(x) => {
+		 [,,k,,i,,j] = x.match(/(para)(.*)(de)(.*)(ate)(.*)(faca)/)
+		 return s = ` FOR ( ${k} = ${i}; ${k} <= ${j} ) {`
+	},
+}
 
 run = (s) => {
   for (property in obj) {
