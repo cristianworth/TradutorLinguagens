@@ -21,7 +21,6 @@ const obj = {
 
 run = (s) => {
   for (property in obj) {
-    debugger;
     rgx = new RegExp(property, "gm");
     s = s.toLowerCase().replace(rgx, (x) => obj[property](x));
   }
@@ -29,7 +28,6 @@ run = (s) => {
 };
 
 traduzir = () => {
-  var original = document.getElementById("original");
-  document.getElementById("translated").innerHTML = "senta na cabeça";
-  //document.getElementById("translated").innerHTML = run(original);
+  var original = document.getElementById("original").value;
+  document.getElementById("translated").innerHTML = run(original);
 };
