@@ -16,6 +16,9 @@ const obj = {
 		 [,,k,,i,,j] = x.match(/(para)(.*)(de)(.*)(ate)(.*)(faca)/)
 		 return s = ` FOR ( ${k} = ${i}; ${k} <= ${j} ) {`
 	},
+	"(inteiro:)|(real:)|(caractere:)|(logico:)": (x) => { 
+		return ` var ` 
+	},
 }
 
 run = (s) => {

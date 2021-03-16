@@ -1,83 +1,53 @@
 <!DOCTYPE html>
-<html lang="pt">
-  <head>
-    <script type="text/javascript" src="tradutor.js"></script>
-    <link rel="stylesheet" href="index.css" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"
-    />
-    <link rel="stylesheet" type="text/css" href="/dist/css/bootstrap.min.css" />
-  </head>
-  <link
-    href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700"
-    rel="stylesheet"
-  />
-  <link
-    href="https://fonts.googleapis.com/css?family=Teko:400,700"
-    rel="stylesheet"
-  />
+	<meta charset="utf-8"/>
+	<html lang="pt">
+	<head>
+	<script type="text/javascript" src="tradutor.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="index.css">
+	<link rel="stylesheet" type="text/css" href="/dist/css/bootstrap.min.css">
+	</head>
+	<link href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Teko:400,700" rel="stylesheet">
+	<body id="contact">
   <body id="contact">
     <div class="section-content">
-      <h1 class="section-header">
-        <span
-          class="content-header wow fadeIn"
-          data-wow-delay="0.2s"
-          data-wow-duration="2s"
-        >
-          Tradutor</span
-        >
-        de Linguagens
-      </h1>
+      <h1 class="section-header"> <span class="content-header wow fadeIn " data-wow-delay="0.2s" data-wow-duration="2s"> Tradutor</span> de Linguagens</h1>
     </div>
     <div class="contact-section">
-      <div class="container">
-        <form>
-          <div class="col-md-6 form-line">
-            <div class="form-group">
-              <label for="from"> De </label>
+    <div class="container">
+      <form>	
+        <div class="col-md-6 form-line">
+            <div class="form-group"> 
+            <label for ="from"> De </label>
+              
+            <select name="from">
+<option value="en">VisualG</option>
 
-              <select name="from">
-                <option value="en">VisualG</option>
-              </select>
-            </div>
+</select> </div>
             <div class="form-group">
-              <textarea
-                rows="20"
-                class="form-control"
-                id="original"
-                placeholder="Código VisualG"
-              ></textarea>
+              
+               <textarea class="form-control" id="original" placeholder="Código VisualG"></textarea>
             </div>
           </div>
           <div class="col-md-6">
+               <div class="form-group"> 
+            <label for ="from"> Para</label>
+              
+            <select name="from">
+<option value="en">JavaScript</option>
+</select> </div>
             <div class="form-group">
-              <label for="from"> Para</label>
-
-              <select name="from">
-                <option value="en">JavaScript</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <textarea
-                class="form-control"
-                id="translated"
-                placeholder="Código traduzido para JS"
-              ></textarea>
+            
+               <textarea  class="form-control" id="translated" placeholder="Código traduzido para JS"></textarea>
             </div>
             <div>
-              <button
-                onclick="traduzir()"
-                type="button"
-                class="btn btn-default submit"
-              >
-                <i class="fa fa-globe" aria-hidden="true"></i> Traduzir
-              </button>
+
+              <button onclick ="traduzir()" type="button" class="btn btn-default submit"><i class="fa fa-globe" aria-hidden="true"></i>   Traduzir</button>
             </div>
-          </div>
-        </form>
-      </div>
-    </div>
+            
+        </div>
+      </form>
+      </div></div>
   </body>
-</html>
+  </html>
