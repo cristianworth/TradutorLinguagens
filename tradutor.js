@@ -6,25 +6,26 @@ const obj = {
 	"(senao)": (x) => { 
 		return ` } ELSE { ` 
 	},
-	"(fimse)|(fimpara)": (x) => { 
+	"(fimse)|(fimpara)|(fimalgoritmo)|(fimenquanto)|(fimescolha)|(fimfuncao)|(fimprocedimento)|(fimrepita)": (x) => {
 		return ` } ` 
 	},
 	"(escreval)|(escreva)": (x) => { 
-		return ` console.log`
+		return ` CONSOLE.LOG`
 	},
 	"(para)(.*)(de)(.*)(ate)(.*)(faca)":(x) => {
 		 [,,k,,i,,j] = x.match(/(para)(.*)(de)(.*)(ate)(.*)(faca)/)
-		 return s = ` FOR ( ${k} = ${i}; ${k} <= ${j} ) {`
+		 return ` FOR ( ${k} = ${i}; ${k} <= ${j} ) {`
 	},
-	"(inteiro:)|(real:)|(caractere:)|(logico:)": (x) => { 
-		return ` var ` 
+	"(inteiro(\\s*):)|(real(\\s*):)|(caractere(\\s*):)|(logico(\\s*):)": (x) => { 
+		return ` VAR ` 
 	},
 }
 
 run = (s) => {
   for (property in obj) {
-    rgx = new RegExp(property, "gm");
-    s = s.toLowerCase().replace(rgx, (x) => obj[property](x));
+	rgx = new RegExp(`(${property})(?=([^"\]*(\\.|"([^"\]*\\.)*[^"\]*"))*[^"]*$)`,"gm")
+	console.log(rgx)
+    	s = s.toLowerCase().replace(rgx, (x) => obj[property](x));
   }
   return s;
 };
