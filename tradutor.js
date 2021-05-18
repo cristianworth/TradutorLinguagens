@@ -1,32 +1,67 @@
-const obj = {
-	"(se)(.*)(entao)": (x) => { 
-		[,,y] = x.match(/(se)(.*)(entao)/)
-		return ` IF ( ${y} ) { ` 
-	},
-	"(senao)": (x) => { 
-		return ` } ELSE { ` 
-	},
-	"(fimse)|(fimpara)|(fimalgoritmo)|(fimenquanto)|(fimescolha)|(fimfuncao)|(fimprocedimento)|(fimrepita)": (x) => {
-		return ` } ` 
-	},
-	"(escreval)|(escreva)": (x) => { 
-		return ` CONSOLE.LOG`
-	},
-	"(para)(.*)(de)(.*)(ate)(.*)(faca)":(x) => {
-		 [,,k,,i,,j] = x.match(/(para)(.*)(de)(.*)(ate)(.*)(faca)/)
-		 return ` FOR ( ${k} = ${i}; ${k} <= ${j} ) {`
-	},
-	"(inteiro(\\s*):)|(real(\\s*):)|(caractere(\\s*):)|(logico(\\s*):)": (x) => { 
-		return ` VAR ` 
-	},
-}
+const tokens = {
+  "(se)": () => {
+    return ` IF ( `;
+  },
+  "(entao)": () => {
+    return ` ) { `;
+  },
+  "(senao)": (x) => {
+    return ` } ELSE { `;
+  },
+  "(fimse)|(fimpara)|(fimalgoritmo)|(fimenquanto)|(fimescolha)|(fimfuncao)|(fimprocedimento)|(fimrepita)":
+    (x) => {
+      return ` } `;
+    },
+  "(escreval)|(escreva)": (x) => {
+    return ` CONSOLE.LOG`;
+  },
+  "(?<=(para))(.*?)(?=(faca))": (x) => {
+    [, k, , i, , j] = x.match(/(.*)(de)(.*)(ate)(.*)/);
+    return ` ${k} = ${i}; ${k} <= ${j}`;
+  },
+  "(para)": (x) => {
+    return ` FOR ( `;
+  },
+  "(faca)": (x) => {
+    return ` ) { `;
+  },
+  "(\\w+)((:(\\s*)inteiro)|(:(\\s*)real)|(:(\\s*)caractere)|(:(\\s*)logico))": (
+    x
+  ) => {
+    [, k] = x.match(
+      /(\w+)((:(\s*)inteiro)|(:(\s*)real)|(:(\s*)caractere)|(:(\s*)logico))/
+    );
+    return ` var ` + k;
+  },
+
+  "(<-)|(:=)": (x) => {
+    return ` = `;
+  },
+
+  "(escolha)": (x) => {
+    return ` switch( `;
+  },
+
+  "(caso)(.*)((caso)|(outrocaso))": (x) => {
+    [, , y] = x.match(/(caso)(.*)((caso)|(outrocaso))/);
+    return `) { case ${y} :`;
+  },
+};
 
 run = (s) => {
-  for (property in obj) {
-	rgx = new RegExp(`(${property})(?=([^"\]*(\\.|"([^"\]*\\.)*[^"\]*"))*[^"]*$)`,"gm")
-	console.log(rgx)
-    	s = s.toLowerCase().replace(rgx, (x) => obj[property](x));
+  for (property in tokens) {
+    rgx = new RegExp(
+      `(${property}\\b)(?=([^"\]*(\\.|"([^"\]*\\.)*[^"\]*"))*[^"]*$)`,
+      "gm"
+    );
+    s = s.toLowerCase().replace(rgx, (x) => tokens[property](x));
   }
+  s = s.replace(
+    /("[^"]*(?:""[^"]*)*")|(.*\(.*?)(?:\n)(.*?\).*)/g,
+    function (m) {
+      return m.replace(/\n/g, "");
+    }
+  );
   return s;
 };
 
@@ -37,31 +72,31 @@ traduzir = () => {
 };
 
 function Download() {
-	var textToWrite = document.getElementById('translated').innerHTML;
-	var textFileAsBlob = new Blob([ textToWrite ], { type: 'text/plain' });
-	var fileNameToSaveAs = "translate.js"; //filename.extension
-  
-	var downloadLink = document.createElement("a");
-	downloadLink.download = fileNameToSaveAs;
-	downloadLink.innerHTML = "Download File";
-	if (window.webkitURL != null) {
-	  // Chrome allows the link to be clicked without actually adding it to the DOM.
-	  downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-	} else {
-	  // Firefox requires the link to be added to the DOM before it can be clicked.
-	  downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-	  downloadLink.onclick = destroyClickedElement;
-	  downloadLink.style.display = "none";
-	  document.body.appendChild(downloadLink);
-	}
-  
-	downloadLink.click();
+  var textToWrite = document.getElementById("translated").innerHTML;
+  var textFileAsBlob = new Blob([textToWrite], { type: "text/plain" });
+  var fileNameToSaveAs = "translate.js"; //filename.extension
+
+  var downloadLink = document.createElement("a");
+  downloadLink.download = fileNameToSaveAs;
+  downloadLink.innerHTML = "Download File";
+  if (window.webkitURL != null) {
+    // Chrome allows the link to be clicked without actually adding it to the DOM.
+    downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+  } else {
+    // Firefox requires the link to be added to the DOM before it can be clicked.
+    downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+    downloadLink.onclick = destroyClickedElement;
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
   }
-  
-  var button = document.getElementById('save');
-  button.addEventListener('click', saveTextAsFile);
-  
-  function destroyClickedElement(event) {
-	// remove the link from the DOM
-	document.body.removeChild(event.target);
-  }
+
+  downloadLink.click();
+}
+
+var button = document.getElementById("save");
+button.addEventListener("click", saveTextAsFile);
+
+function destroyClickedElement(event) {
+  // remove the link from the DOM
+  document.body.removeChild(event.target);
+}
