@@ -9,7 +9,7 @@ const tokens = {
 	"(senao)": (x) => { 
 		return ` } ELSE { ` 
 	},
-	"(fimse)|(fimpara)|(fimalgoritmo)|(fimenquanto)|(fimescolha)|(fimfuncao)|(fimprocedimento)|(fimrepita)": (x) => {
+	"(fimse)|(fimpara)|(fimenquanto)|(fimescolha)|(fimfuncao)|(fimprocedimento)|(fimrepita)": (x) => {
 		return ` } ` 
 	},
 	"(escreval)|(escreva)": (x) => { 
@@ -40,7 +40,9 @@ const tokens = {
 	"(escolha)": (x) => {
 		return ` switch( `;
 		},
-		
+  "(<-)|(:=\\s*)": (x) => {
+    return ` = `;
+  },
 	"((caso)(.*))": (x) => {
 		[, , y] = x.match(/(caso)(.*)/);
 		ar = y.split(',')
