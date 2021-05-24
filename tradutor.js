@@ -46,6 +46,30 @@ const tokens = {
 		ar = y.split(',')
 		return ar.reduce( (prev, curr) => prev + ` case ${curr} : \n` );
 	},
+	"(leia)\((.*)\)": (x) => {
+		[, a] = x.match(/leia\((.*)\)/);
+		return ` var ${a} = prompt('What is your name?',''); `;
+	  },
+	  "(algoritmo)|(var)|(inicio)|(fimalgoritmo)": (x) => {
+		return ``;
+	  },
+	  "(retorne)": (x) => {
+		return ` return `;
+	  },
+	  "(nao)": (x) => {
+		return `!`;
+	  },
+	  "(limpatela)": (x) => {
+		return `console.clear()`;
+	  },
+	
+	  "(verdadeiro)": (x) => {
+		return ` true `;
+	  },
+	
+	  "(falso)": (x) => {
+		return ` false `;
+	  },
 }
 
 
