@@ -1,4 +1,7 @@
 const tokens = {
+	"(.*algoritmo \".*\"\n)|(var)|(inicio)|(fimalgoritmo)": (x) => {
+		return ``;
+	  },
 	"(se)":() => { 
 		return ` IF ( ` 
 	},
@@ -31,10 +34,14 @@ const tokens = {
 		[,,,k] = x.match(/(ate)(\s*)(.+)(\s|$)/)
 		return `} while (${k});\n `
 	},
-	"(\\w+)((:(\\s*)inteiro)|(:(\\s*)real)|(:(\\s*)caractere)|(:(\\s*)logico))": (x) => { 
-		[,k] = x.match(/(\w+)((:(\s*)inteiro)|(:(\s*)real)|(:(\s*)caractere)|(:(\s*)logico))/)
-		return ` var ` + k 
-	},
+	"(\\w+)((\\s*:(\\s*)inteiro)|(\\s*:(\\s*)real)|(\\s*:(\\s*)caractere)|(\\s*:(\\s*)logico))": (
+		x
+	  ) => {
+		[, k] = x.match(
+		  /(\w+)((\s*:(\s*)inteiro)|(\s*:(\s*)real)|(\s*:(\s*)caractere)|(\s*:(\s*)logico))/
+		);
+		return ` var ` + k;
+	  },
 	"(escolha)": (x) => {
 		return ` switch( `;
   },
@@ -46,9 +53,6 @@ const tokens = {
 		ar = y.split(',')
 		return ar.reduce( (prev, curr) => prev + ` case ${curr} : \n` );
 	},
-  "(algoritmo)|(var)|(inicio)|(fimalgoritmo)": (x) => {
-    return ``;
-  },
   "(retorne)": (x) => {
     return ` return `;
   },
@@ -64,9 +68,9 @@ const tokens = {
   "(falso)": (x) => {
     return ` false `;
   },
-	"leia.*": (x) => {
-		[, a] = x.match(/leia\((.*)/);
-		return ` var ${a} = prompt( `;
+	"(leia)(\\s*)(.*)": (x) => {
+		[, a] = x.match(/leia\s*\((.*)/);
+		return ` ${a} = prompt(`;
   },
 }
 
