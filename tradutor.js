@@ -5,7 +5,6 @@ const tokens = {
 	"(entao)": () => { 
 		return ` ) { ` 
 	},
-
 	"(senao)": (x) => { 
 		return ` } ELSE { ` 
 	},
@@ -18,13 +17,13 @@ const tokens = {
 	"(?<=(para))(.*?)(?=(\\s*faca))":(x) => {
 		[,k,,i,,j,,,z] = x.match(/(\S+)(\s+)(de)(\s+)(\S+)(\s+)(ate)(\s+)(\S+)(\s*)((passo)(\s+)(\S+))?/).filter( x=> (x||'').trim())
 		return ` ${k} = ${i}; ${k} <= ${j}; ${k} + ${z||1}`
-   },
+  },
 	"(para)":(x) => {
-		 return ` FOR ( `
+    return ` FOR ( `
 	},
 	"(enquanto)":(x) => {
 		return ` WHILE ( `
-   	},
+  },
 	"(repita)":(x) => {
 		return ` DO {`
 	},
@@ -32,14 +31,13 @@ const tokens = {
 		[,,,k] = x.match(/(ate)(\s*)(.+)(\s|$)/)
 		return `} while (${k});\n `
 	},
-
 	"(\\w+)((:(\\s*)inteiro)|(:(\\s*)real)|(:(\\s*)caractere)|(:(\\s*)logico))": (x) => { 
 		[,k] = x.match(/(\w+)((:(\s*)inteiro)|(:(\s*)real)|(:(\s*)caractere)|(:(\s*)logico))/)
 		return ` var ` + k 
 	},
 	"(escolha)": (x) => {
 		return ` switch( `;
-		},
+  },
   "(<-)|(:=\\s*)": (x) => {
     return ` = `;
   },
@@ -48,43 +46,39 @@ const tokens = {
 		ar = y.split(',')
 		return ar.reduce( (prev, curr) => prev + ` case ${curr} : \n` );
 	},
-	"(leia)\((.*)\)": (x) => {
-		[, a] = x.match(/leia\((.*)\)/);
-		return ` var ${a} = prompt('What is your name?',''); `;
-	  },
-	  "(algoritmo)|(var)|(inicio)|(fimalgoritmo)": (x) => {
-		return ``;
-	  },
-	  "(retorne)": (x) => {
-		return ` return `;
-	  },
-	  "(nao)": (x) => {
-		return `!`;
-	  },
-	  "(limpatela)": (x) => {
-		return `console.clear()`;
-	  },
-	
-	  "(verdadeiro)": (x) => {
-		return ` true `;
-	  },
-	
-	  "(falso)": (x) => {
-		return ` false `;
-	  },
+  "(algoritmo)|(var)|(inicio)|(fimalgoritmo)": (x) => {
+    return ``;
+  },
+  "(retorne)": (x) => {
+    return ` return `;
+  },
+  "(nao)": (x) => {
+    return `!`;
+  },
+  "(limpatela)": (x) => {
+    return `console.clear()`;
+  },
+  "(verdadeiro)": (x) => {
+    return ` true `;
+  },
+  "(falso)": (x) => {
+    return ` false `;
+  },
+	"leia.*": (x) => {
+		[, a] = x.match(/leia\((.*)/);
+		return ` var ${a} = prompt( `;
+  },
 }
 
 
 run = (s) => {
-  
   for (property in tokens) {
-
 		rgx = new RegExp(`(${property}\\b)(?=([^"\]*(\\.|"([^"\]*\\.)*[^"\]*"))*[^"]*$)`,"gmi")
 		if(property=="((caso)(.*))"){
-			rgx = new RegExp(`(${property})`,"gmi")
+      rgx = new RegExp(`(${property})`,"gmi")
 		}
 
-    	s = s.toLowerCase().replace(rgx, (x) => tokens[property](x));
+    s = s.toLowerCase().replace(rgx, (x) => tokens[property](x));
   }
   s = s.replace(/("[^"]*(?:""[^"]*)*")|(.*\(.*?)(?:\n)(.*?\).*)/g, function(m) { return m.replace(/\n/g, ''); })
   return s;
@@ -95,9 +89,9 @@ traduzir = () => {
 	var original = document.getElementById("original").value;
 	document.getElementById("downloadbtn").disabled = false;
 	document.getElementById("translated").innerHTML = run(original);
-  };
+};
   
-  function Download() {
+function Download() {
 	var textToWrite = document.getElementById("translated").innerHTML;
 	var textFileAsBlob = new Blob([textToWrite], { type: "text/plain" });
 	var fileNameToSaveAs = "translate.js"; //filename.extension
@@ -117,12 +111,10 @@ traduzir = () => {
 	}
   
 	downloadLink.click();
-  }
+}
+
   
-  var button = document.getElementById("save");
-  button.addEventListener("click", saveTextAsFile);
-  
-  function destroyClickedElement(event) {
-	// remove the link from the DOM
-	document.body.removeChild(event.target);
-  }
+function destroyClickedElement(event) {
+  // remove the link from the DOM
+  document.body.removeChild(event.target);
+}
