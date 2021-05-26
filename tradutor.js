@@ -1,21 +1,18 @@
 const tokens = {
 	"(.*algoritmo \".*\"\n)|(var)|(inicio)|(fimalgoritmo)": (x) => {
 		return ``;
-	  },
+	},
 	"(se)":() => { 
-		return ` IF ( ` 
+		return ` if ( ` 
 	},
 	"(entao)": () => { 
 		return ` ) { ` 
 	},
 	"(senao)": (x) => { 
-		return ` } ELSE { ` 
-	},
-	"(fimse)|(fimpara)|(fimenquanto)|(fimescolha)|(fimfuncao)|(fimprocedimento)|(fimrepita)": (x) => {
-		return ` } ` 
+		return ` } else { ` 
 	},
 	"(escreval)|(escreva)": (x) => { 
-		return ` CONSOLE.LOG`
+		return ` console.log `
 	},
 	"(?<=(para))(.*?)(?=(\\s*faca))":(x) => {
 		[,k,,i,,j,,,z] = x.match(/(\S+)(\s+)(de)(\s+)(\S+)(\s+)(ate)(\s+)(\S+)(\s*)((passo)(\s+)(\S+))?/).filter( x=> (x||'').trim())
@@ -25,34 +22,24 @@ const tokens = {
     return ` FOR ( `
 	},
 	"(enquanto)":(x) => {
-		return ` WHILE ( `
+		return ` while ( `
   },
 	"(repita)":(x) => {
-		return ` DO {`
+		return ` do {`
 	},
 	"(ate)(\\s*)(.+)(\\s|$)":(x) => {
 		[,,,k] = x.match(/(ate)(\s*)(.+)(\s|$)/)
 		return `} while (${k});\n `
 	},
-	"(\\w+)((\\s*:(\\s*)inteiro)|(\\s*:(\\s*)real)|(\\s*:(\\s*)caractere)|(\\s*:(\\s*)logico))": (
-		x
-	  ) => {
+	"(\\w+)((\\s*:(\\s*)inteiro)|(\\s*:(\\s*)real)|(\\s*:(\\s*)caractere)|(\\s*:(\\s*)logico))": (x) => {
 		[, k] = x.match(
 		  /(\w+)((\s*:(\s*)inteiro)|(\s*:(\s*)real)|(\s*:(\s*)caractere)|(\s*:(\s*)logico))/
 		);
 		return ` var ` + k;
 	  },
-	"(escolha)": (x) => {
-		return ` switch( `;
-  },
   "(<-)|(:=\\s*)": (x) => {
     return ` = `;
   },
-	"((caso)(.*))": (x) => {
-		[, , y] = x.match(/(caso)(.*)/);
-		ar = y.split(',')
-		return ar.reduce( (prev, curr) => prev + ` case ${curr} : \n` );
-	},
   "(retorne)": (x) => {
     return ` return `;
   },
@@ -68,23 +55,50 @@ const tokens = {
   "(falso)": (x) => {
     return ` false `;
   },
-	"(leia)(\\s*)(.*)": (x) => {
-		[, a] = x.match(/leia\s*\((.*)/);
-		return ` ${a} = prompt(`;
+	"((leia\\s*)\\(([^)]*)\\))": (x) => {
+		[, , a] = x.match(/(leia\s*)\((.*)\)/i);
+		return ` ${a} = prompt() `;
   },
+	"((maiusc\\s*)\\(([^)]*)\\))":(x) => {
+		[, , a] = x.match(/(maiusc\s*)\((.*)\)/i);
+		return ` ${a}.toUpperCase()`;
+	},
+	"((minusc\\s*)\\(([^)]*)\\))":(x) => {
+		[, , a] = x.match(/(minusc\s*)\((.*)\)/i);
+		return ` ${a}.toLowerCase()`;
+	},
+	"(interrompa)": (x) => {
+		return ` break `;
+	},
+	"((ESCOLHA)[\\s\\S]*(?=(FIMESCOLHA)))": (x) => {
+		debugger;
+		[operation,...token] = x.split(/(?<!".*)caso|outrocaso(?<!".*)/i);
+		[opt] = operation.match(/(?<=(escolha))(.*)/i)
+		opt = `switch ( ${opt} ) { \n`
+		outrocaso = x.match(/(?<!".*)caso|outrocaso(?<!".*)/igm).indexOf('outrocaso')
+		return opt + token.reduce((prev, curr, index) => {
+			[,tk] = curr.match(/(.*)\n/)
+			var exp = curr.replace(tk,'');
+			ar = tk.split(',');
+			
+			if(outrocaso==index)
+				return prev + ` default: ` +exp+"\nbreak;\n"
+			return prev+ ar.reduce( (p, c) => p + ` case ${c} : `,'' )+exp+"\n break;\n"
+			
+		},'')
+	},
+	"(fimse)|(fimpara)|(fimenquanto)|(fimescolha)|(fimfuncao)|(fimprocedimento)|(fimrepita)": (x) => {
+		return ` } ` 
+	},
 }
 
 
 run = (s) => {
   for (property in tokens) {
-		rgx = new RegExp(`(${property}\\b)(?=([^"\]*(\\.|"([^"\]*\\.)*[^"\]*"))*[^"]*$)`,"gmi")
-		if(property=="((caso)(.*))"){
-      rgx = new RegExp(`(${property})`,"gmi")
-		}
+	rgx = new RegExp(`(${property})(?=([^"\]*(\\.|"([^"\]*\\.)*[^"\]*"))*[^"]*$)`,"gmi")
 
-    s = s.toLowerCase().replace(rgx, (x) => tokens[property](x));
+	s = s.replace(rgx, (x) => tokens[property](x));
   }
-  s = s.replace(/("[^"]*(?:""[^"]*)*")|(.*\(.*?)(?:\n)(.*?\).*)/g, function(m) { return m.replace(/\n/g, ''); })
   return s;
 };
 
