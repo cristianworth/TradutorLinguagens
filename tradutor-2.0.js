@@ -63,7 +63,7 @@ var lex = function (input) {
             var idn = c;
             while (isIdentifier(advance())) idn += c;
             if (isKeyWord(idn)) {
-                addToken("keyword", idn);
+                addToken("keyword", idn.toLowerCase());
             } else {
                 addToken("identifier", idn);
             }
@@ -85,6 +85,8 @@ var symbols = {},
     };
 
 var interpretToken = function (token) {
+    if(!token)
+        debugger
     var sym = Object.create(symbols[token.type]);
     sym.type = token.type;
     sym.value = token.value;
@@ -128,17 +130,32 @@ const keys = [
             let retorno = ` ${this.value} `
             let variables = []
             while (!(token().type === this.expectType && token().value === this.expect)) {
+                
                 if (token().type === "identifier") {
                     variables.push(expression())
-
                 }
                 else if (token().type === "operator" && token().value === ":") {
                     while (token().type !== this.expectType) advance()
 
-                    let type = keywords[token().value]
+                    var type = keywords[token().value]
+                    if (token().value === "vetor") {
+                        while (token().type !== "access") advance()
+                        let access = token().value.split(',');
+                        if(access.length > 1){
+                            [initial,final] = access[0].match(/\d/g)
+                            [mInitial,mFinal] = access[1].match(/\d/g)
+                            variables[variables.length-1].parsedValue = variables[variables.length-1].value + ` = [...Array(${final}+1)].map((e,indx) => { if(indx>=${initial}) Array(${mFinal}+1).fill(null,${mInitial}) }) ` 
+                        }else{
+                            [initial,final] = access[0].match(/\d/g)
+                            variables[variables.length-1].parsedValue = variables[variables.length-1].value + ` = [...Array(${final}+1).fill(null,${initial}) ]`
+                        }
+                        while ((token().type !== this.expectType) || (token().value === "de" && token().type === this.expectType)) advance()
+                        type = keywords[token().value]
+                    }
+                    
                     variables.forEach(variable => {
                         tokens.forEach((tk, index) => {
-                            if (tk.value === variable.value && tk.type === variable.type)
+                            if (!tk.dataType && tk.value === variable.value && tk.type === variable.type)
                                 tokens[index].dataType = type;
                         })
                     })
@@ -148,7 +165,7 @@ const keys = [
                     advance()
             };
 
-            return retorno + variables.map(v => v.value).join() + ";\n";
+            return retorno + variables.map(v => v.parsedValue || v.value).join() + ";\n";
         }
     },
     {
@@ -197,6 +214,7 @@ const keys = [
         expect: "fimescolha",
         expectType: "keyword",
         parser: function () {
+            
             let retorno = ` ${this.value} ( `
             let expectExpression = true;
 
@@ -425,6 +443,9 @@ symbol("number", function (number) {
 symbol("literal", function (literal) {
     return literal;
 });
+symbol("access", function (access) {
+    return access;
+});
 symbol("newline", function (newline) {
     return newline;
 });
@@ -511,7 +532,7 @@ var keywords = {
     para: "for",
     de: ";",
     ate: "<=",
-    passo: "++",
+    passo: "+=",
     faca: "do",
     fimpara: "}",
     escolha: "switch",
@@ -528,6 +549,7 @@ var keywords = {
     inteiro: "Number",
     real: "Number",
     caractere: "String",
+    caracter: "String",
     logico: "Boolean",
     vetor: "Array"
 };
