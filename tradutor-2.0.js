@@ -562,9 +562,27 @@ var args = {};
 
 run = (s) => {
     tokens = lex(s);
+    contaOcorrenciaTokens();
     return parse()
 };
 
+function contaOcorrenciaTokens(){
+    var countTokens = Object.values(tokens.reduce((a, {value}) => {
+        a[value] = a[value] || {value, count: 0};
+        a[value].count++;
+        return a;
+    }, Object.create(null)));
+    
+    console.log('tabela de ocorrencia dos token = ', countTokens);
+
+    function mostraOcorrenciaNaDiv () {
+        var minhaDiv = document.getElementById("ocorrenciaTokens");
+        countTokens.forEach(function(x){
+            minhaDiv.innerHTML += `<p>${x.value} aparece ${x.count} vez(es)</p>`; 
+        });
+    }
+    //mostraOcorrenciaNaDiv (); /*Comentar, para não mostrar na Div*/
+}
 
 traduzir = () => {
     var original = document.getElementById("original").value;
@@ -595,7 +613,7 @@ function Download() {
 }
 
 var button = document.getElementById("save");
-button.addEventListener("click", saveTextAsFile);
+//button.addEventListener("click", saveTextAsFile);
 
 function destroyClickedElement(event) {
     // remove the link from the DOM
