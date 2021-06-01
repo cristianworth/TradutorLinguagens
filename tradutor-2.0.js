@@ -792,6 +792,7 @@ var args = {};
 
 run = (s) => {
     tokens = lexer(s);
+    contaOcorrenciaTokens()
     return parse()
 };
 
@@ -843,12 +844,8 @@ function contaOcorrenciaTokens(){
     }, Object.create(null)));
     
     console.log('tabela de ocorrencia dos token = ', countTokens);
-
-    function mostraOcorrenciaNaDiv () {
-        var minhaDiv = document.getElementById("ocorrenciaTokens");
-        countTokens.forEach(function(x){
-            minhaDiv.innerHTML += `<p>${x.value} aparece ${x.count} vez(es)</p>`; 
-        });
-    }
-    //mostraOcorrenciaNaDiv (); /*Comentar, para não mostrar na Div*/
+    var minhaDiv = document.getElementById("ocorrenciaTokens");
+    countTokens.forEach(function(x){
+        minhaDiv.innerHTML += `<tr><td>${x.value}</td><td>${x.count}</td></tr>`; 
+    });
 }
