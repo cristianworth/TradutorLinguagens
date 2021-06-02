@@ -1,4 +1,9 @@
    /*Contact sectiom*/
+   .fonte{
+    font-family: 'Courier New', monospace;
+    font-size: 22px;
+    
+   }
    .content-header{
     font-family: 'Oleo Script', cursive;
     color:#fcc500;
@@ -47,6 +52,15 @@
     font-family: 'Courier New', monospace;
     font-size: 1.3em;
     color: #080808;
+  }
+  table{
+    font-family: 'Courier New', monospace;
+    width:100%;
+    font-size: 18px;
+    
+  }
+  th, td{
+    border: 1px solid black;
   }
   textarea.form-control {
       height: 500px;
