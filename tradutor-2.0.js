@@ -1003,7 +1003,7 @@ var args = {};
 
 run = (s) => {
     tokens = lexer(s);
-    ontaOcorrenciaTokens()
+    contaOcorrenciaTokens()
     return parse()
 };
 
