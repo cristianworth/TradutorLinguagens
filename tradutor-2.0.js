@@ -132,7 +132,48 @@ const keys = [
         value: "var",
         expect: "inicio",
         expectType: "keyword",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value} `
+            let variables = []
+            while (!(token().type === this.expectType && token().value === this.expect)) {
+                
+                if (token().type === "identifier") {
+                    variables.push(expression())
+                }
+                else if (token().type === "operator" && token().value === ":") {
+                    while (token().type !== this.expectType) advance()
+
+                    var type = keywords[token().value]
+                    if (token().value === "vetor") {
+                        while (token().type !== "access") advance()
+                        let access = token().value.split(',');
+                        if(access.length > 1){
+                            [initial,final] = access[0].match(/\d/g);
+                            [mInitial,mFinal] = access[1].match(/\d/g);
+                            variables[variables.length-1].parsedValue = variables[variables.length-1].value + ` = [...Array(${final}+1)].map((e,indx) => { if(indx>=${initial}) return Array(${mFinal}+1).fill(null,${mInitial}) }) ` 
+                        }else{
+                            [initial,final] = access[0].match(/\d/g)
+                            variables[variables.length-1].parsedValue = variables[variables.length-1].value + ` = [...Array(${final}+1).fill(null,${initial}) ]`
+                        }
+                        while ((token().type !== this.expectType) || (token().value === "de" && token().type === this.expectType)) advance()
+                        type = keywords[token().value]
+                    }
+                    
+                    variables.forEach(variable => {
+                        tokens.forEach((tk, index) => {
+                            if (!tk.dataType && tk.value === variable.value && tk.type === variable.type)
+                                tokens[index].dataType = type;
+                        })
+                    })
+                    advance()
+                }
+                else
+                    advance()
+            };
+
+            return retorno + variables.map(v => v.parsedValue || v.value).join() + ";\n";
+        },
+        parserCS: function () {
             let retorno = ` ${this.value} `
             let variables = []
             while (!(token().type === this.expectType && token().value === this.expect)) {
@@ -179,7 +220,13 @@ const keys = [
         value: "{",
         expect: "fimalgoritmo",
         expectType: "keyword",
-        parser: function () {
+        parserJS: function () {
+            console.log('traduzir para JS')
+            let retorno = ` ${this.value} `
+            return retorno
+        },
+        parserCS: function () {
+            console.log('traduzir para CS')
             let retorno = ` ${this.value} `
             return retorno
         }
@@ -189,7 +236,11 @@ const keys = [
         value: "}",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value} `
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value} `
             return retorno
         }
@@ -199,7 +250,11 @@ const keys = [
         value: "=",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value} `
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value} `
             return retorno
         }
@@ -209,17 +264,38 @@ const keys = [
         value: "=",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
             let retorno = ` ${this.value} `
             return retorno
-        }
+        },
+        parserCS: function () {
+            let retorno = ` ${this.value} `
+            return retorno
+        },
     },
     {
         key: "escolha",
         value: "switch",
         expect: "fimescolha",
         expectType: "keyword",
-        parser: function () {
+        parserJS: function () {
+            
+            let retorno = ` ${this.value} ( `
+            let expectExpression = true;
+
+            while (!(token().type === this.expectType && token().value === this.expect)) {
+                if (token().type === "newline" && expectExpression) {
+                    retorno += ' ) {\n '
+                    advance();
+                    expectExpression = false;
+                    continue
+                }
+                exp = expression()
+                retorno += exp.value
+            };
+            return retorno
+        },
+        parserCS: function () {
             
             let retorno = ` ${this.value} ( `
             let expectExpression = true;
@@ -242,7 +318,37 @@ const keys = [
         value: "case",
         expect: "caso|outrocaso|fimescolha",
         expectType: "keyword",
-        parser: function (generated) {
+        parserJS: function (generated) {
+            let retorno = ` ${this.value} `
+            let rgx = new RegExp(this.expect, 'i')
+            let expectExpression = true;
+
+            if (!generated) {
+                let list = tokens.slice(i)
+                let index = list.findIndex(next => rgx.test(next.value) && next.type === "keyword")
+                tokens.splice(i + index, 0, { type: "keyword", value: "interrompa", generated: true })
+            }
+
+            while (!(token().type === this.expectType && rgx.test(token().value))) {
+                if (token().type === "operator" && token().value === ",") {
+                    retorno += ' : \n '
+                    advance();
+                    tokens.splice(i, 0, { type: "keyword", value: "caso", generated: true })
+                    expectExpression = false;
+                    continue
+                }
+                else if (token().type === "newline" && expectExpression) {
+                    retorno += ' : \n '
+                    advance();
+                    expectExpression = false;
+                    continue
+                }
+                exp = expression()
+                retorno += exp.value || exp
+            };
+            return retorno
+        },
+        parserCS: function (generated) {
             let retorno = ` ${this.value} `
             let rgx = new RegExp(this.expect, 'i')
             let expectExpression = true;
@@ -278,7 +384,11 @@ const keys = [
         value: "break",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value}; \n`
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value}; \n`
             return retorno
         }
@@ -288,7 +398,11 @@ const keys = [
         value: "}",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value}; \n `
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value}; \n `
             return retorno
         }
@@ -298,7 +412,11 @@ const keys = [
         value: "}",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value}; \n `
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value}; \n `
             return retorno
         }
@@ -308,7 +426,11 @@ const keys = [
         value: "}",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value}; \n `
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value}; \n `
             return retorno
         }
@@ -318,7 +440,11 @@ const keys = [
         value: "default",
         expect: "fimescolha",
         expectType: "keyword",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value}: `
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value}: `
             return retorno
         }
@@ -328,7 +454,11 @@ const keys = [
         value: "console.log",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value}`
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value}`
             return retorno
         }
@@ -338,7 +468,11 @@ const keys = [
         value: "console.log",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value}`
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value}`
             return retorno
         }
@@ -348,7 +482,25 @@ const keys = [
         value: "prompt",
         expect: "",
         expectType: "identifier",
-        parser: function () {
+        parserJS: function () {
+            let exp;
+            while (!(token().type === "operator" && token().value === "("))
+                advance()
+
+            if (token().type === "operator" && token().value === "(") {
+                tokens[i].type = "argument"
+            }
+            exp = expression()
+            let args = argument(exp)
+            arg = args.find(a => a.type == this.expectType)
+            argsAccess = args.find(a => a.type == "access")
+            if(argsAccess?.value)
+                argsAccess.value = argsAccess.value.replace(',',"][")
+
+            let retorno = ` ${arg.value + (argsAccess?.value||'')} = ${arg.dataType}(${this.value}()); console.log(${arg.value + (argsAccess?.value||'')});`
+            return retorno
+        },
+        parserCS: function () {
             let exp;
             while (!(token().type === "operator" && token().value === "("))
                 advance()
@@ -372,7 +524,27 @@ const keys = [
         value: "toUpperCase",
         expect: "",
         expectType: "identifier|literal",
-        parser: function () {
+        parserJS: function () {
+            let exp;
+            let rgx = new RegExp(this.expectType, 'i')
+            while (!(token().type === "operator" && token().value === "("))
+                advance()
+
+            if (token().type === "operator" && token().value === "(") {
+                tokens[i].type = "argument"
+            }
+            exp = expression()
+            let args = argument(exp)
+            debugger
+            arg = args.find(a => rgx.test(a.type))
+            argsAccess = args.find(a => a.type == "access")
+            if(argsAccess?.value)
+                argsAccess.value = argsAccess.value.replace(',',"][")
+
+            let retorno = ` ${arg.value + (argsAccess?.value||'')}.${this.value}()`
+            return retorno
+        },
+        parserCS: function () {
             let exp;
             let rgx = new RegExp(this.expectType, 'i')
             while (!(token().type === "operator" && token().value === "("))
@@ -398,7 +570,26 @@ const keys = [
         value: "toLowerCase",
         expect: "",
         expectType: "identifier|literal",
-        parser: function () {
+        parserJS: function () {
+            let exp;
+            let rgx = new RegExp(this.expectType, 'i')
+            while (!(token().type === "operator" && token().value === "("))
+                advance()
+
+            if (token().type === "operator" && token().value === "(") {
+                tokens[i].type = "argument"
+            }
+            exp = expression()
+            let args = argument(exp)
+            arg = args.find(a => rgx.test(a.type))
+            argsAccess = args.find(a => a.type == "access")
+            if(argsAccess?.value)
+                argsAccess.value = argsAccess.value.replace(',',"][")
+
+            let retorno = ` ${arg.value + (argsAccess?.value||'')}.${this.value}()`
+            return retorno
+        },
+        parserCS: function () {
             let exp;
             let rgx = new RegExp(this.expectType, 'i')
             while (!(token().type === "operator" && token().value === "("))
@@ -423,7 +614,50 @@ const keys = [
         value: "for",
         expect: "faca",
         expectType: "keyword",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value} ( `
+            let indentifier = "", initialValue = "", finalValue = "", step = "";
+            
+            function* generatorParts() {
+                yield (value) => {
+                    indentifier += value
+                }
+                yield (value) => {
+                    initialValue += value
+                }
+                yield (value) => {
+                    finalValue += value
+                }
+                yield (value) => {
+                    step += value
+                }
+            }
+            
+            let argumentParts = generatorParts();
+            let part = argumentParts.next();
+            
+            while (!(token().type === this.expectType && token().value === this.expect)) {
+                
+                if (token().type === "keyword" && token().value == "de"){
+                    part = argumentParts.next()
+                    advance()
+                }
+                else if (token().type === "keyword" && token().value == "ate"){
+                    part = argumentParts.next()
+                    advance()
+                }
+                else if (token().type === "keyword" && token().value == "passo"){
+                    part = argumentParts.next()
+                    advance()
+                }
+                part.value(token().value)
+                advance()
+            };
+            advance()
+            retorno += ` ${indentifier} = ${initialValue}; ${indentifier} <= ${finalValue}; ${indentifier} += (${step || 1}) ) {`
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value} ( `
             let indentifier = "", initialValue = "", finalValue = "", step = "";
             
@@ -473,7 +707,14 @@ const keys = [
         value: "if",
         expect: "entao",
         expectType: "keyword",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value} ( `
+            while (!(token().type === this.expectType && token().value === this.expect)) {
+                retorno += expression().value
+            };
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value} ( `
             while (!(token().type === this.expectType && token().value === this.expect)) {
                 retorno += expression().value
@@ -487,7 +728,11 @@ const keys = [
         value: "{",
         expect: "",
         expectType: "newline",
-        parser: function () {
+        parserJS: function () {
+            let retorno = `) ${this.value} `
+            return retorno
+        },
+        parserCS: function () {
             let retorno = `) ${this.value} `
             return retorno
         },
@@ -498,7 +743,11 @@ const keys = [
         value: "true",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value} `
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value} `
             return retorno
         }
@@ -508,7 +757,11 @@ const keys = [
         value: "false",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value} `
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value} `
             return retorno
         }
@@ -518,7 +771,14 @@ const keys = [
         value: "while",
         expect: "faca",
         expectType: "keyword",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value} ( `
+            while (!(token().type === this.expectType && token().value === this.expect)) {
+                retorno += expression().value
+            };
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value} ( `
             while (!(token().type === this.expectType && token().value === this.expect)) {
                 retorno += expression().value
@@ -532,7 +792,11 @@ const keys = [
         value: "{",
         expect: "",
         expectType: "newline",
-        parser: function () {
+        parserJS: function () {
+            let retorno = `) ${this.value} `
+            return retorno
+        },
+        parserCS: function () {
             let retorno = `) ${this.value} `
             return retorno
         },
@@ -543,37 +807,53 @@ const keys = [
         value: "}",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
             let retorno = ` ${this.value}`
             return retorno
-        }
+        },
+        parserCS: function () {
+            let retorno = ` ${this.value}`
+            return retorno
+        },
     },
     {
         key: "=",
         value: "===",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
             let retorno = ` ${this.value}`
             return retorno
-        }
+        },
+        parserCS: function () {
+            let retorno = ` ${this.value}`
+            return retorno
+        },
     },
     {
         key: "<>",
         value: "!==",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
             let retorno = ` ${this.value}`
             return retorno
-        }
+        },
+        parserCS: function () {
+            let retorno = ` ${this.value}`
+            return retorno
+        },
     },
     {
         key: "e",
         value: "&&",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value}`
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value}`
             return retorno
         }
@@ -583,7 +863,11 @@ const keys = [
         value: "||",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value}`
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value}`
             return retorno
         }
@@ -593,7 +877,14 @@ const keys = [
         value: "do",
         expect: "ate",
         expectType: "keyword",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value} { `
+            while (!(token().type === this.expectType && token().value === this.expect)) {
+                retorno += expression().value
+            };
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value} { `
             while (!(token().type === this.expectType && token().value === this.expect)) {
                 retorno += expression().value
@@ -606,7 +897,14 @@ const keys = [
         value: "while",
         expect: "fimrepita",
         expectType: "keyword",
-        parser: function () {
+        parserJS: function () {
+            let retorno = `} ${this.value} ( `
+            while (!(token().type === this.expectType && token().value === this.expect)) {
+                retorno += expression().value
+            };
+            return retorno
+        },
+        parserCS: function () {
             let retorno = `} ${this.value} ( `
             while (!(token().type === this.expectType && token().value === this.expect)) {
                 retorno += expression().value
@@ -619,7 +917,11 @@ const keys = [
         value: ")",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value}`
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value}`
             return retorno
         }
@@ -629,7 +931,11 @@ const keys = [
         value: "%",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let retorno = ` ${this.value}`
+            return retorno
+        },
+        parserCS: function () {
             let retorno = ` ${this.value}`
             return retorno
         }
@@ -639,7 +945,26 @@ const keys = [
         value: "Math.random()",
         expect: "",
         expectType: "",
-        parser: function () {
+        parserJS: function () {
+            let exp;
+            let rgx = new RegExp(this.expectType, 'i')
+            while (!(token().type === "operator" && token().value === "("))
+                advance()
+
+            if (token().type === "operator" && token().value === "(") {
+                tokens[i].type = "argument"
+            }
+            exp = expression()
+            let args = argument(exp)
+            arg = args.find(a => rgx.test(a.type))
+            argsAccess = args.find(a => a.type == "access")
+            if(argsAccess?.value)
+                argsAccess.value = argsAccess.value.replace(',',"][")
+
+            let retorno = `Math.floor(Math.random() * ${arg.value + (argsAccess?.value||'')} )`
+            return retorno
+        },
+        parserCS: function () {
             let exp;
             let rgx = new RegExp(this.expectType, 'i')
             while (!(token().type === "operator" && token().value === "("))
@@ -684,7 +1009,8 @@ symbol("newline", function (newline) {
 });
 symbol("assignment", function (assignment) {
     value = keys.find(k => k.key?.toLowerCase() === assignment.value?.toLowerCase());
-    return { value: value?.parser(assignment.generated) ?? "", type: "parsed" };
+    if (traduzParaJS) return { value: value?.parserJS(assignment.generated) ?? "", type: "parsed" };
+    else return { value: value?.parserCS(assignment.generated) ?? "", type: "parsed" };
 });
 symbol("argument", function (arg) {
     if (arg.value === "(") {
@@ -706,11 +1032,13 @@ symbol("operator", function (operator) {
 symbol("logical", function (logical) {
     debugger
     value = keys.find(k => k.key?.toLowerCase() === logical.value?.toLowerCase());
-    return { value: value?.parser(logical.generated) ?? "", type: "parsed" };
+    if (traduzParaJS) return { value: value?.parserJS(logical.generated) ?? "", type: "parsed" };
+    else return { value: value?.parserCS(logical.generated) ?? "", type: "parsed" };
 });
 symbol("keyword", function (keyword) {
     value = keys.find(k => k.key?.toLowerCase() === keyword.value?.toLowerCase());
-    return { value: value?.parser(keyword.generated) ?? "", type: "parsed" };
+    if (traduzParaJS) return { value: value?.parserJS(keyword.generated) ?? "", type: "parsed" };
+    else return { value: value?.parserCS(keyword.generated) ?? "", type: "parsed" };
 });
 symbol("identifier", function (name) {
     return name;
@@ -790,17 +1118,19 @@ var keywords = {
 
 var args = {};
 
+
 run = (s) => {
     tokens = lexer(s);
     contaOcorrenciaTokens()
     return parse()
 };
 
-
+var traduzParaJS;
 traduzir = () => {
     tokens = [];
     var original = document.getElementById("original").value;
     document.getElementById("downloadbtn").disabled = false;
+    traduzParaJS = document.getElementById("traduzPara").value == "JS";
     document.getElementById("translated").innerHTML = run(original);
 };
 
