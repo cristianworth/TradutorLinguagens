@@ -55,7 +55,7 @@ const keysCS = [
         expect: "fimalgoritmo",
         expectType: "keyword",
         parser: function () {
-            let retorno = ` ${this.value} `
+            let retorno = ` ${this.value} se ta traduzindo do C# `
             return retorno
         }
     },

@@ -117,7 +117,7 @@ var compileArguments = function (argstree) {
 }
 
 var parse = function () {
-    keys = keysJS;
+    keys = (traduzParaJS) ? keysJS : keysCS;
     i = 0;
     let parseTree = "";
     while (token().type !== "(end)") {
@@ -202,10 +202,11 @@ run = (s) => {
     return parse()
 };
 
-
+var traduzParaJS;
 traduzir = () => {
     var original = document.getElementById("original").value;
     document.getElementById("downloadbtn").disabled = false;
+    traduzParaJS = document.getElementById("traduzPara").value == "JS";
     document.getElementById("translated").value = run(original);
 };
 
