@@ -3,6 +3,7 @@ var lexer = function (input) {
     var isAssignment = function (c) { return /(<-|:=)/.test(c + input[i + 1]); },
         isLogical = function (c) { return /(<>|[<>]+=.|\se\s|\sou\s)/i.test(input[i - 1] + c + input[i + 1] + input[i + 2]); },
         isOperator = function (c) { return /[+\-*\/\^%()<>!,:]/.test(c); },
+        isComment = function (c) { return /\/{2}/.test(c + input[i + 1]);  },
         isAccess = function (c) { return /[\[\]]/.test(c); },
         isDigit = function (c) { return /[0-9]/.test(c); },
         isWhiteSpace = function (c) { return / /.test(c); },
@@ -22,7 +23,14 @@ var lexer = function (input) {
 
     while (i < input.length) {
         c = input[i];
-        if (isLiteral(c)) {
+        if (isComment(c)) {
+            var cmm = "";
+            do cmm += c; while (!isNewLine(advance()));
+            cmm += c
+            advance()
+            addToken("comment", cmm)
+        }
+        else if (isLiteral(c)) {
             var lit = "";
             do lit += c; while (!isLiteral(advance()));
             lit += c
@@ -169,6 +177,7 @@ var keywords = {
     leia: "prompt",
     var: "var",
     inicio: "{",
+    algoritmo: "//",
     fimalgoritmo: "}",
     inteiro: "Number",
     real: "Number",
@@ -241,15 +250,16 @@ function destroyClickedElement(event) {
 
 
 function contaOcorrenciaTokens(){
-    var countTokens = Object.values(tokens.reduce((a, {value}) => {
-        a[value] = a[value] || {value, count: 0};
+    var countTokens = Object.values(tokens.reduce((a, {value, type}) => {
+        a[value] = a[value] == undefined ? {value, type, count: 0} : a[value] ;
         a[value].count++;
         return a;
     }, Object.create(null)));
-    
+    var sort = ["identifier","keyword","number","literal","operator","logical","assignment","access","call","argument","newline", "comment","(end)"]
+    countTokens = countTokens.sort((a, b) => sort.indexOf(a.type) - sort.indexOf(b.type));
     console.log('tabela de ocorrencia dos token = ', countTokens);
-    var minhaDiv = document.getElementById("ocorrenciaTokens");
+    var minhaDiv = document.getElementById("ocorrenciaTokensBody");
     countTokens.forEach(function(x){
-        minhaDiv.innerHTML += `<tr><td>${x.value}</td><td>${x.count}</td></tr>`; 
+        minhaDiv.innerHTML += `<tr><td scope="row">${x.value === '\n' ? 'Quebra de linha' : x.value}</td><td>${x.type}</td><td>${x.count}</td></tr>`; 
     });
 }
