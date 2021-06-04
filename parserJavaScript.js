@@ -70,6 +70,16 @@ const keysJS = [
         }
     },
     {
+        key: "algoritmo",
+        value: "//",
+        expect: "",
+        expectType: "",
+        parser: function () {
+            let retorno = ` ${this.value} algoritmo `
+            return retorno
+        }
+    },
+    {
         key: "<-",
         value: "=",
         expect: "",
