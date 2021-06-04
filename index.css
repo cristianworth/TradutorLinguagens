@@ -4,6 +4,7 @@
     font-size: 22px;
     
    }
+
    .content-header{
     font-family: 'Oleo Script', cursive;
     color:#fcc500;
@@ -53,14 +54,34 @@
     font-size: 1.3em;
     color: #080808;
   }
-  table{
+  .tabela-token  {
     font-family: 'Courier New', monospace;
     width:100%;
     font-size: 18px;
-    
+    color: #333;
+    background-color: white;
   }
-  th, td{
+  .tabela-token thead th, .tabela-token thead td,
+  .tabela-token tbody th, .tabela-token tbody td  {
+    width: 40%;
+    padding: 5px;
     border: 1px solid black;
+  }
+
+  .tabela-token thead :nth-child(3),
+  .tabela-token tbody tr :nth-child(3)  {
+    width: 20%;
+    text-align: center;
+  }
+
+  .tabela-token thead th {
+    background-color: #dadada;
+  }
+  .tabela-token tbody td {
+    padding-left: 10px;
+  }
+  caption {
+    color:white !important;
   }
   textarea.form-control {
       height: 500px;
