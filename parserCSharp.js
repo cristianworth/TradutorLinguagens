@@ -79,6 +79,16 @@ const keysCS = [
         }
     },
     {
+        key: "algoritmo",
+        value: "//",
+        expect: "",
+        expectType: "",
+        parser: function () {
+            let retorno = ` ${this.value} algoritmo `
+            return retorno
+        }
+    },
+    {
         key: "<-",
         value: "=",
         expect: "",
@@ -221,14 +231,15 @@ const keysCS = [
             if (token().type === "operator" && token().value === "(") {
                 tokens[i].type = "argument"
             }
+            
             exp = expression()
-            let args = argument(exp)
-            arg = args.filter(a => rgx.test(a.type))
+            let args = compileArguments(exp)
+            arg = args.filter(a => a.type !== "argument" &&  a.value !== ",")
             arg.forEach( a => {
                 if (a?.value && a.type == "access")
                     a.value = a.value.replace(',', "][")
             })
-            let retorno = `${this.value}(string.Format(${arg.reduce((accumulator, currentValue, index) => accumulator += `{${index}} `,"")},${arg.map(a => a.value).join()} ))`
+            let retorno = `${this.value}(string.Format("${arg.reduce((accumulator, currentValue, index) => accumulator += `{${index}} `,"")}",${arg.map(a => a.value).join()} ))`
             return retorno
         }
     },
@@ -246,14 +257,15 @@ const keysCS = [
             if (token().type === "operator" && token().value === "(") {
                 tokens[i].type = "argument"
             }
+            
             exp = expression()
-            let args = argument(exp)
-            arg = args.filter(a => rgx.test(a.type))
+            let args = compileArguments(exp)
+            arg = args.filter(a => a.type !== "argument" &&  a.value !== ",")
             arg.forEach( a => {
                 if (a?.value && a.type == "access")
                     a.value = a.value.replace(',', "][")
             })
-            let retorno = `${this.value}(string.Format(${arg.reduce((accumulator, currentValue, index) => accumulator += `{${index}} `,"")},${arg.map(a => a.value).join()} ))`
+            let retorno = `${this.value}(string.Format("${arg.reduce((accumulator, currentValue, index) => accumulator += `{${index}} `,"")}",${arg.map(a => a.value).join()} ))`
             return retorno
         }
     },
