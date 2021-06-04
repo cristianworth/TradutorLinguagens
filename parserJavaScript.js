@@ -532,7 +532,7 @@ const keysJS = [
         key: "randi",
         value: "Math.random()",
         expect: "",
-        expectType: "",
+        expectType: "number",
         parser: function () {
             let exp;
             let rgx = new RegExp(this.expectType, 'i')

@@ -64,7 +64,7 @@ const keysCS = [
             
             let retorno = ` ${this.value} `
             if(lastIndex+1 == i)
-                retorno = `	public static void Main()\n{`
+            retorno = `	public void Main()\n{\n Random rand = new Random(); `
             return retorno
         }
     },
@@ -570,26 +570,11 @@ const keysCS = [
     },
     {
         key: "randi",
-        value: "Math.random()",
+        value: "rand.Next",
         expect: "",
-        expectType: "identifier",
+        expectType: "number",
         parser: function () {
-            let exp;
-            let rgx = new RegExp(this.expectType, 'i')
-            while (!(token().type === "operator" && token().value === "("))
-                advance()
-
-            if (token().type === "operator" && token().value === "(") {
-                tokens[i].type = "argument"
-            }
-            exp = expression()
-            let args = argument(exp)
-            arg = args.find(a => rgx.test(a.type))
-            argsAccess = args.find(a => a.type == "access")
-            if (argsAccess?.value)
-                argsAccess.value = argsAccess.value.replace(',', "][")
-
-            let retorno = `Math.floor(Math.random() * ${arg.value + (argsAccess?.value || '')} )`
+            let retorno = `${this.value}`
             return retorno
         }
     },
