@@ -213,16 +213,14 @@ traduzir = () => {
 function Download() {
     var textToWrite = document.getElementById("translated").value;
     var textFileAsBlob = new Blob([textToWrite], { type: "text/plain" });
-    var fileNameToSaveAs = "translate.js"; //filename.extension
+    var fileNameToSaveAs = (traduzParaJS) ? "translate.js" : "translate.cs";
 
     var downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;
     downloadLink.innerHTML = "Download File";
     if (window.webkitURL != null) {
-        // Chrome allows the link to be clicked without actually adding it to the DOM.
         downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
     } else {
-        // Firefox requires the link to be added to the DOM before it can be clicked.
         downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
         downloadLink.onclick = destroyClickedElement;
         downloadLink.style.display = "none";

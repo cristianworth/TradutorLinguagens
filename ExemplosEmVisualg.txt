@@ -1,0 +1,22 @@
+algoritmo "Números de 1 a 10"
+var j: inteiro
+inicio
+para j de 1 ate 10 faca
+   escreva (j)
+fimpara
+fimalgoritmo
+
+
+
+algoritmo "Times"
+var time: caractere
+inicio
+escreva ("Entre com o nome de um time de futebol: ")
+leia (time)
+escolha time
+caso "Flamengo"
+escreval ("É um time carioca.")
+outrocaso
+escreval ("É de outro estado.")
+fimescolha
+fimalgoritmo

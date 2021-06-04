@@ -173,7 +173,7 @@ const keysCS = [
         expect: "",
         expectType: "",
         parser: function () {
-            let retorno = ` ${this.value}; \n `
+            let retorno = ` break; \n${this.value}; \n `
             return retorno
         }
     },
@@ -263,6 +263,7 @@ const keysCS = [
         expect: "",
         expectType: "identifier",
         parser: function () {
+            debugger;
             let exp;
             while (!(token().type === "operator" && token().value === "("))
                 advance()
