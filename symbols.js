@@ -6,15 +6,8 @@ var symbols = {},
         };
     };
 
-symbol(")");
 symbol("(end)", function () { return { value: "", type: "(end)" } });
 
-symbol("(", function () {
-    value = expression();
-    if (token().type !== ")") throw "Expected closing parenthesis ')'";
-    advance();
-    return value;
-});
 symbol("number", function (number) {
     return number;
 });
@@ -69,4 +62,7 @@ symbol("keyword", function (keyword) {
 });
 symbol("identifier", function (name) {
     return name;
+});
+symbol("comment", function (comment) {
+    return comment;
 });
