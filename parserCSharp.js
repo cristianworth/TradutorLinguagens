@@ -309,7 +309,7 @@ const keysCS = [
     },
     {
         key: "maiusc",
-        value: "toUpperCase",
+        value: "ToUpper",
         expect: "",
         expectType: "identifier|literal",
         parser: function () {
@@ -334,7 +334,7 @@ const keysCS = [
     },
     {
         key: "minusc",
-        value: "toLowerCase",
+        value: "ToLower",
         expect: "",
         expectType: "identifier|literal",
         parser: function () {
@@ -489,7 +489,7 @@ const keysCS = [
     },
     {
         key: "=",
-        value: "===",
+        value: "==",
         expect: "",
         expectType: "",
         parser: function () {
@@ -499,7 +499,7 @@ const keysCS = [
     },
     {
         key: "<>",
-        value: "!==",
+        value: "!=",
         expect: "",
         expectType: "",
         parser: function () {
