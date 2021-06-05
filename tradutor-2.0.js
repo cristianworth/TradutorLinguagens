@@ -132,6 +132,16 @@ var parse = function () {
         let parsedExpression = expression()
         parseTree += " " + parsedExpression.value;
     }
+    if(!traduzParaJS){
+        var rgx = /([;{}]|(^\s*))(\s*)$/img
+        var x = parseTree.split('\n')
+        x.forEach((s,i) => { 
+            if(!s.match(rgx)){
+                x[i] += " ; "
+            }
+        } )
+        parseTree = x.join("\n")
+    }
     return parseTree;
 };
 
