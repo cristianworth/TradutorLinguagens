@@ -301,6 +301,8 @@ const keysCS = [
             let retorno;
             if (tipoVariavelUsada == "int?")
                 retorno = ` ${arg.value} = Convert.ToInt32(Console.ReadLine()); `
+            else if (tipoVariavelUsada == "decimal?")
+                retorno = ` ${arg.value} = Convert.ToDecimal(Console.ReadLine()); `
             else
                 retorno = ` ${arg.value} = Console.ReadLine(); `
             
@@ -795,7 +797,7 @@ const keysCS = [
 
 const variablesCS = {
     inteiro: "int?",
-    real: "int?",
+    real: "decimal?",
     caractere: "string",
     caracter: "string",
     logico: "bool?",
