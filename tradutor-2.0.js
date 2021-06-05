@@ -1,7 +1,7 @@
 var lexer = function (input) {
 
     var isAssignment = function (c) { return /(<-|:=)/.test(c + input[i + 1]); },
-        isLogical = function (c) { return /(<>|[<>]+=.|\se\s|\sou\s)/i.test(input[i - 1] + c + input[i + 1] + input[i + 2]); },
+        isLogical = function (c) { return /(<>|[<>]?=.|\se\s|\sou\s)/i.test(input[i - 1] + c + input[i + 1] + input[i + 2]); },
         isOperator = function (c) { return /[+\-*\/\^%()<>!,:]/.test(c); },
         isComment = function (c) { return /\/{2}/.test(c + input[i + 1]);  },
         isAccess = function (c) { return /[\[\]]/.test(c); },
