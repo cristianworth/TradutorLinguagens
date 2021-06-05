@@ -1,4 +1,5 @@
 
+var variaveisUsadas;
 const keysCS = [
     {
         key: "var",
@@ -49,6 +50,7 @@ const keysCS = [
                     advance()
             };
             
+            variaveisUsadas = variables;
             return retorno + variables.reduce((prev, current) =>  
                prev += ` ${current.dataType} ${(current.parsedValue || (current.value+' = null'))};\n` 
              , '');
@@ -275,7 +277,6 @@ const keysCS = [
         expect: "",
         expectType: "identifier",
         parser: function () {
-            debugger;
             let exp;
             while (!(token().type === "operator" && token().value === "("))
                 advance()
@@ -290,7 +291,19 @@ const keysCS = [
             if (argsAccess?.value)
                 argsAccess.value = argsAccess.value.replace(',', "][")
 
-            let retorno = ` ${arg.value + (argsAccess?.value || '')} = ${arg.dataType}(${this.value}()); console.log(${arg.value + (argsAccess?.value || '')});`
+            let tipoVariavelUsada;
+            variaveisUsadas.forEach(function (x) {
+                if (x.value == arg.value) {
+                    tipoVariavelUsada = x.dataType;
+                }
+            })
+            
+            let retorno;
+            if (tipoVariavelUsada == "int?")
+                retorno = ` ${arg.value} = Convert.ToInt32(Console.ReadLine()); `
+            else
+                retorno = ` ${arg.value} = Console.ReadLine(); `
+            
             return retorno
         }
     },
