@@ -66,7 +66,7 @@ const keysCS = [
             
             let retorno = ` ${this.value} `
             if(lastIndex+1 == i)
-            retorno = `	public void Main()\n{\n Random rand = new Random(); `
+            retorno = `	public void Main(){\n Random rand = new Random(); `
             return retorno
         }
     },
