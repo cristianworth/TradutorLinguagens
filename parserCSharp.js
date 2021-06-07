@@ -657,6 +657,7 @@ const keysCS = [
                     args = variables.reduce((prev, current) =>
                         prev += ` ${current.dataType} ${(current.parsedValue || current.value)},`
                         , '');
+                    args = args.substring(0, args.length - 1); /*Remove a ultima virgula*/
                     part = argumentParts.next()
 
                 }
@@ -685,7 +686,7 @@ const keysCS = [
                 }
             })
 
-            retorno += ` ${returnType} ${indentifier.value} (${args}) {\n`
+            retorno += ` void ${indentifier.value} (${args}) {\n`
             return retorno
         }
     },
@@ -731,6 +732,7 @@ const keysCS = [
                     args = variables.reduce((prev, current) =>
                         prev += ` ${current.dataType} ${(current.parsedValue || current.value)},`
                         , '');
+                    args = args.substring(0, args.length - 1); /*Remove a ultima virgula*/
                     part = argumentParts.next()
 
                 }

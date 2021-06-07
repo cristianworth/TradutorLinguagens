@@ -85,3 +85,52 @@ inicio
    escreval("Mes 1:", mes1)
    escreval("Mes 2:", mes2)
 fimAlgoritmo
+
+
+algoritmo "funcao visualg"
+var
+   num1: real
+   res: real
+funcao multiplica (x:real) : real
+   inicio
+         retorne x*x
+fimfuncao
+inicio
+   escreval("Informe um numero: ")
+   leia(num1)
+   res <- multiplica(num1)
+   escreval(num1, " x ", num1, " = ", res)
+fimalgoritmo
+
+
+algoritmo "procedimento visualg"
+var
+   n: inteiro
+   m: inteiro
+   res: inteiro
+procedimento  soma (x,y: inteiro): inteiro
+inicio
+      res <- x + y
+fimprocedimento
+inicio
+   n <- 4
+   m <- -9
+   soma(n,m)
+   escreva(res)
+fimalgoritmo
+
+
+algoritmo "Repita ate visualg"
+var
+   valorDigitado : REAL
+   soma : REAL
+inicio
+      soma := 0
+      REPITA
+          ESCREVA ("Digite um valor para a soma: ")
+          LEIA (valorDigitado)
+          soma := soma + valorDigitado
+          ESCREVAL ("Total: ", soma)
+      ATE valorDigitado = 0
+      FIMREPITA
+fimalgoritmo
