@@ -1,42 +1,47 @@
 <!DOCTYPE html>
-	<meta charset="utf-8"/>
-	<html lang="pt">
-	<head>
+<meta charset="utf-8" />
+<html lang="pt">
+
+<head>
   <script type="text/javascript" src="tradutor-2.0.js"></script>
-  <script type="text/javascript" src="parserCSharp.js"></script>  
-  <script type="text/javascript" src="parserJavaScript.js"></script>  
+  <script type="text/javascript" src="parserCSharp.js"></script>
+  <script type="text/javascript" src="parserJavaScript.js"></script>
   <script type="text/javascript" src="symbols.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="index.css">
-	<link rel="stylesheet" type="text/css" href="/dist/css/bootstrap.min.css">
-	</head>
-	<link href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Teko:400,700" rel="stylesheet">
-	<body id="contact">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <link rel="stylesheet" type="text/css" href="/dist/css/bootstrap.min.css">
+</head>
+<link href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Teko:400,700" rel="stylesheet">
+
+<body id="contact">
+
   <body id="contact">
     <div class="section-content">
-      <h1 class="section-header"> <span class="content-header wow fadeIn " data-wow-delay="0.2s" data-wow-duration="2s"> Tradutor</span> de Linguagens</h1>
+      <h1 class="section-header"> <span class="content-header wow fadeIn " data-wow-delay="0.2s" data-wow-duration="2s">
+          Tradutor</span> de Linguagens</h1>
     </div>
     <div class="contact-section">
-    <div class="container">
-      <form>	
-        <div class="col-md-6 form-line">
-            <div class="form-group"> 
-            <label for ="from"> De </label>
-              
-            <select name="from">
-<option value="en">VisualG</option>
-
-</select> </div>
+      <div class="container">
+        <form>
+          <div class="col-md-6 form-line">
             <div class="form-group">
-              
-               <textarea class="form-control" id="original" placeholder="Código VisualG"></textarea>
+              <label for="from"> De </label>
+
+              <select name="from">
+                <option value="en">VisualG</option>
+
+              </select>
+            </div>
+            <div class="form-group">
+
+              <textarea class="form-control" id="original" placeholder="Código VisualG"></textarea>
             </div>
           </div>
           <div class="col-md-6">
-            <div class="form-group"> 
+            <div class="form-group">
               <label for="traduzPara"> Para</label>
-                
+
               <select id="traduzPara">
                 <option value="JS">JavaScript</option>
                 <option value="CS">C#</option>
@@ -44,36 +49,36 @@
 
             </div>
             <div class="form-group">
-            
-               <textarea  class="form-control" id="translated" placeholder="Código traduzido para JS"></textarea>
+
+              <textarea class="form-control" id="translated" placeholder="Código traduzido para JS"></textarea>
             </div>
             <div>
 
-              <button onclick ="traduzir()" type="button" id="traduzbtn" class="btn btn-default submit"><i class="fa fa-globe" aria-hidden="true"></i>   Traduzir</button>
-              <button onclick ="Download()" type="button" id="downloadbtn" disabled class="btn btn-default submit"><i class="fa fa-globe" aria-hidden="true"></i>   Download</button>
+              <button onclick="traduzir()" type="button" id="traduzbtn" class="btn btn-default submit"><i
+                  class="fa fa-globe" aria-hidden="true"></i> Traduzir</button>
+              <button onclick="Download()" type="button" id="downloadbtn" disabled class="btn btn-default submit"><i
+                  class="fa fa-globe" aria-hidden="true"></i> Download</button>
             </div>
 
-            </div>
+          </div>
 
-            <table id="ocorrenciaTokens" class="tabela-token">
-              <caption class="fonte" >Tabela de Tokens</caption>
-              <thead>
-                <tr>
-                    <th scope="col">Token</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Quantidade</th>
-                </tr>
+          <table id="ocorrenciaTokens" class="tabela-token">
+            <caption class="fonte">Tabela de Tokens</caption>
+            <thead>
+
             </thead>
             <tbody id="ocorrenciaTokensBody">
-              
+
             </tbody>
-            </table>
-            
-        </div:>
-      </form>
-      <div>
-        <br>
-      </divd>
-      </div></div>
+          </table>
+
+          </div:>
+        </form>
+        <div>
+          <br>
+          </divd>
+        </div>
+      </div>
   </body>
-  </html>
+
+</html>

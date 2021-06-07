@@ -3,7 +3,7 @@ var
    j: inteiro
 inicio
    para j de 1 ate 10 faca
-      escreva (j)
+      escreval (j)
    fimpara
 fimalgoritmo
 
@@ -29,9 +29,9 @@ var
 inicio
    escreva ("Digite um valor (Real): ")
    leia(valor1)
-   escreva ("Valor Informado: ",valor1)
-   escreva (maiusc("maiusculo"))
-   escreva (minusc("MINUSCULO"))
+   escreval ("Valor Informado: ",valor1)
+   escreval (maiusc("maiusculo"))
+   escreval (minusc("MINUSCULO"))
 fimalgoritmo
 
 

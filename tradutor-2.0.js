@@ -3,7 +3,7 @@ var lexer = function (input) {
     var isAssignment = function (c) { return /(<-|:=)/.test(c + input[i + 1]); },
         isLogical = function (c) { return /(<>|[<>]?=.|\se\s|\sou\s)/i.test(input[i - 1] + c + input[i + 1] + input[i + 2]); },
         isOperator = function (c) { return /[+\-*\/\^%()<>!,:]/.test(c); },
-        isComment = function (c) { return /\/{2}/.test(c + input[i + 1]);  },
+        isComment = function (c) { return /\/{2}/.test(c + input[i + 1]); },
         isAccess = function (c) { return /[\[\]]/.test(c); },
         isDigit = function (c) { return /[0-9]/.test(c); },
         isWhiteSpace = function (c) { return / /.test(c); },
@@ -132,14 +132,14 @@ var parse = function () {
         let parsedExpression = expression()
         parseTree += " " + parsedExpression.value;
     }
-    if(!traduzParaJS){
+    if (!traduzParaJS) {
         var rgx = /([;{}]|(^\s*))(\s*)$/img
         var x = parseTree.split('\n')
-        x.forEach((s,i) => { 
-            if(!s.match(rgx)){
+        x.forEach((s, i) => {
+            if (!s.match(rgx)) {
                 x[i] += " ; "
             }
-        } )
+        })
         parseTree = x.join("\n")
     }
     return parseTree;
@@ -259,17 +259,21 @@ function destroyClickedElement(event) {
 
 
 
-function contaOcorrenciaTokens(){
-    var countTokens = Object.values(tokens.reduce((a, {value, type}) => {
-        a[value] = a[value] == undefined ? {value, type, count: 0} : a[value] ;
+function contaOcorrenciaTokens() {
+    var countTokens = Object.values(tokens.reduce((a, { value, type }) => {
+        a[value] = a[value] == undefined ? { value, type, count: 0 } : a[value];
         a[value].count++;
         return a;
     }, Object.create(null)));
-    var sort = ["identifier","keyword","number","literal","operator","logical","assignment","access","call","argument","newline", "comment","(end)"]
+    var sort = ["identifier", "keyword", "number", "literal", "operator", "logical", "assignment", "access", "call", "argument", "newline", "comment", "(end)"]
     countTokens = countTokens.sort((a, b) => sort.indexOf(a.type) - sort.indexOf(b.type));
-    console.log('tabela de ocorrencia dos token = ', countTokens);
-    var minhaDiv = document.getElementById("ocorrenciaTokensBody");
-    countTokens.forEach(function(x){
-        minhaDiv.innerHTML += `<tr><td scope="row">${x.value === '\n' ? 'Quebra de linha' : x.value}</td><td>${x.type}</td><td>${x.count}</td></tr>`; 
+
+    var cabecalhoHTML = '<tr><th scope="col">Token</th><th scope="col">Tipo</th><th scope="col">Quantidade</th></tr>';
+    var corpoHTML = '';
+    countTokens.forEach(function (x) {
+        corpoHTML += `<tr><td scope="row">${x.value === '\n' ? 'Quebra de linha' : x.value}</td><td>${x.type}</td><td>${x.count}</td></tr>`;
     });
+
+    var minhaDiv = document.getElementById("ocorrenciaTokensBody");
+    minhaDiv.innerHTML = cabecalhoHTML + corpoHTML;
 }
