@@ -10,7 +10,7 @@ const keysCS = [
             let retorno = ` `
             let variables = []
             let rgx = new RegExp(this.expect, 'i')
-            
+
             while (!(token().type === this.expectType && rgx.test(token().value))) {
 
                 if (token().type === "identifier") {
@@ -28,17 +28,17 @@ const keysCS = [
                         if (access.length > 1) {
                             [initial, final] = access[0].match(/\d/g);
                             [mInitial, mFinal] = access[1].match(/\d/g);
-                            variables[variables.length - 1].parsedValue = variables[variables.length - 1].value + ` = new ${type}[${(+initial)+(+final)},${(+mInitial)+(+mFinal)}] `
+                            variables[variables.length - 1].parsedValue = variables[variables.length - 1].value + ` = new ${type}[${(+initial) + (+final)},${(+mInitial) + (+mFinal)}] `
                         } else {
                             [initial, final] = access[0].match(/\d/g)
-                            variables[variables.length - 1].parsedValue = variables[variables.length - 1].value + ` = new ${type}[${(+initial)+(+final)}]`
+                            variables[variables.length - 1].parsedValue = variables[variables.length - 1].value + ` = new ${type}[${(+initial) + (+final)}]`
                         }
-                        type+='[]';
+                        type += '[]';
                     }
 
                     variables.forEach(variable => {
                         tokens.forEach((tk, index) => {
-                            if (!tk.dataType && tk.value === variable.value && tk.type === variable.type){
+                            if (!tk.dataType && tk.value === variable.value && tk.type === variable.type) {
                                 tokens[index].dataType = type;
                                 variable.dataType = type
                             }
@@ -49,11 +49,11 @@ const keysCS = [
                 else
                     advance()
             };
-            
+
             variaveisUsadas = variables;
-            return retorno + variables.reduce((prev, current) =>  
-               prev += ` ${current.dataType} ${(current.parsedValue || (current.value+' = null'))};\n` 
-             , '');
+            return retorno + variables.reduce((prev, current) =>
+                prev += ` ${current.dataType} ${(current.parsedValue || (current.value + ' = null'))};\n`
+                , '');
         }
     },
     {
@@ -62,11 +62,11 @@ const keysCS = [
         expect: "fimalgoritmo",
         expectType: "keyword",
         parser: function () {
-            let lastIndex = tokens.map(t=> t.value).lastIndexOf("inicio");
-            
+            let lastIndex = tokens.map(t => t.value).lastIndexOf("inicio");
+
             let retorno = ` ${this.value} `
-            if(lastIndex+1 == i)
-            retorno = `	public void Main(){\n Random rand = new Random(); `
+            if (lastIndex + 1 == i)
+                retorno = `	public void Main(){\n Random rand = new Random(); `
             return retorno
         }
     },
@@ -233,15 +233,15 @@ const keysCS = [
             if (token().type === "operator" && token().value === "(") {
                 tokens[i].type = "argument"
             }
-            
+
             exp = expression()
             let args = compileArguments(exp)
-            arg = args.filter(a => a.type !== "argument" &&  a.value !== ",")
-            arg.forEach( a => {
+            arg = args.filter(a => a.type !== "argument" && a.value !== ",")
+            arg.forEach(a => {
                 if (a?.value && a.type == "access")
                     a.value = a.value.replace(',', "][")
             })
-            let retorno = `${this.value}(string.Format("${arg.reduce((accumulator, currentValue, index) => accumulator += `{${index}} `,"")}",${arg.map(a => a.value).join()} ))`
+            let retorno = `${this.value}(string.Format("${arg.reduce((accumulator, currentValue, index) => accumulator += `{${index}} `, "")}",${arg.map(a => a.value).join()} ))`
             return retorno
         }
     },
@@ -259,15 +259,15 @@ const keysCS = [
             if (token().type === "operator" && token().value === "(") {
                 tokens[i].type = "argument"
             }
-            
+
             exp = expression()
             let args = compileArguments(exp)
-            arg = args.filter(a => a.type !== "argument" &&  a.value !== ",")
-            arg.forEach( a => {
+            arg = args.filter(a => a.type !== "argument" && a.value !== ",")
+            arg.forEach(a => {
                 if (a?.value && a.type == "access")
                     a.value = a.value.replace(',', "][")
             })
-            let retorno = `${this.value}(string.Format("${arg.reduce((accumulator, currentValue, index) => accumulator += `{${index}} `,"")}",${arg.map(a => a.value).join()} ))`
+            let retorno = `${this.value}(string.Format("${arg.reduce((accumulator, currentValue, index) => accumulator += `{${index}} `, "")}",${arg.map(a => a.value).join()} ))`
             return retorno
         }
     },
@@ -297,7 +297,7 @@ const keysCS = [
                     tipoVariavelUsada = x.dataType;
                 }
             })
-            
+
             let retorno;
             if (tipoVariavelUsada == "int?")
                 retorno = ` ${arg.value} = Convert.ToInt32(Console.ReadLine()); `
@@ -305,7 +305,7 @@ const keysCS = [
                 retorno = ` ${arg.value} = Convert.ToDecimal(Console.ReadLine()); `
             else
                 retorno = ` ${arg.value} = Console.ReadLine(); `
-            
+
             return retorno
         }
     },
@@ -433,6 +433,16 @@ const keysCS = [
             return retorno
         },
 
+    },
+    {
+        key: "senao",
+        value: "else",
+        expect: "",
+        expectType: "keyword",
+        parser: function () {
+            let retorno = ` } ${this.value} { `
+            return retorno
+        },
     },
     {
         key: "verdadeiro",
@@ -631,7 +641,7 @@ const keysCS = [
 
                             variables.forEach(variable => {
                                 tokens.forEach((tk, index) => {
-                                    if (!tk.dataType && tk.value === variable.value && tk.type === variable.type){
+                                    if (!tk.dataType && tk.value === variable.value && tk.type === variable.type) {
                                         tokens[index].dataType = type;
                                         variable.dataType = type
                                     }
@@ -643,12 +653,12 @@ const keysCS = [
                         else
                             advance()
                     };
-                    
-                    args =  variables.reduce((prev, current) =>  
-                    prev += ` ${current.dataType} ${(current.parsedValue || current.value)},`
-                    , '');
+
+                    args = variables.reduce((prev, current) =>
+                        prev += ` ${current.dataType} ${(current.parsedValue || current.value)},`
+                        , '');
                     part = argumentParts.next()
-                    
+
                 }
                 yield (value) => {
                     if (value.type === "keyword")
@@ -669,12 +679,12 @@ const keysCS = [
             };
             advance()
             tokens.forEach((tk, index) => {
-                if (!tk.returnType && tk.value === indentifier.value && tk.type === indentifier.type){
+                if (!tk.returnType && tk.value === indentifier.value && tk.type === indentifier.type) {
                     tokens[index].type = "call";
-                    tokens[index].returnType = variablesCS[returnType]||"void";
+                    tokens[index].returnType = variablesCS[returnType] || "void";
                 }
             })
-            
+
             retorno += ` ${returnType} ${indentifier.value} (${args}) {\n`
             return retorno
         }
@@ -705,7 +715,7 @@ const keysCS = [
 
                             variables.forEach(variable => {
                                 tokens.forEach((tk, index) => {
-                                    if (!tk.dataType && tk.value === variable.value && tk.type === variable.type){
+                                    if (!tk.dataType && tk.value === variable.value && tk.type === variable.type) {
                                         tokens[index].dataType = type;
                                         variable.dataType = type
                                     }
@@ -717,12 +727,12 @@ const keysCS = [
                         else
                             advance()
                     };
-                    
-                    args =  variables.reduce((prev, current) =>  
-                    prev += ` ${current.dataType} ${(current.parsedValue || current.value)},`
-                    , '');
+
+                    args = variables.reduce((prev, current) =>
+                        prev += ` ${current.dataType} ${(current.parsedValue || current.value)},`
+                        , '');
                     part = argumentParts.next()
-                    
+
                 }
                 yield (value) => {
                     if (value.type === "keyword")
@@ -743,12 +753,12 @@ const keysCS = [
             };
             advance()
             tokens.forEach((tk, index) => {
-                if (!tk.returnType && tk.value === indentifier.value && tk.type === indentifier.type){
+                if (!tk.returnType && tk.value === indentifier.value && tk.type === indentifier.type) {
                     tokens[index].type = "call";
-                    tokens[index].returnType = variablesCS[returnType]||"void";
+                    tokens[index].returnType = variablesCS[returnType] || "void";
                 }
             })
-            
+
             retorno += ` ${returnType} ${indentifier.value} (${args}) {\n`
             return retorno
         }

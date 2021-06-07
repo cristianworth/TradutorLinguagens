@@ -9,7 +9,7 @@ const keysJS = [
             let retorno = ` ${this.value} `
             let variables = []
             let rgx = new RegExp(this.expect, 'i')
-            
+
             while (!(token().type === this.expectType && rgx.test(token().value))) {
 
                 if (token().type === "identifier") {
@@ -364,7 +364,6 @@ const keysJS = [
             };
             return retorno
         },
-
     },
     {
         key: "entao",
@@ -375,7 +374,16 @@ const keysJS = [
             let retorno = `) ${this.value} `
             return retorno
         },
-
+    },
+    {
+        key: "senao",
+        value: "else",
+        expect: "",
+        expectType: "keyword",
+        parser: function () {
+            let retorno = ` } ${this.value} { `
+            return retorno
+        },
     },
     {
         key: "verdadeiro",
@@ -601,7 +609,7 @@ const keysJS = [
                     };
                     args = variables.map(v => v.parsedValue || v.value).join();
                     part = argumentParts.next()
-                    
+
                 }
                 yield (value) => {
                     if (value.type === "keyword")
@@ -622,12 +630,12 @@ const keysJS = [
             };
             advance()
             tokens.forEach((tk, index) => {
-                if (!tk.returnType && tk.value === indentifier.value && tk.type === indentifier.type){
+                if (!tk.returnType && tk.value === indentifier.value && tk.type === indentifier.type) {
                     tokens[index].type = "call";
-                    tokens[index].returnType = keywords[returnType]||"void";
+                    tokens[index].returnType = keywords[returnType] || "void";
                 }
             })
-            
+
             retorno += ` ${indentifier.value} (${args}) {\n`
             return retorno
         }
@@ -670,7 +678,7 @@ const keysJS = [
                     };
                     args = variables.map(v => v.parsedValue || v.value).join();
                     part = argumentParts.next()
-                    
+
                 }
                 yield (value) => {
                     if (value.type === "keyword")
@@ -691,12 +699,12 @@ const keysJS = [
             };
             advance()
             tokens.forEach((tk, index) => {
-                if (!tk.returnType && tk.value === indentifier.value && tk.type === indentifier.type){
+                if (!tk.returnType && tk.value === indentifier.value && tk.type === indentifier.type) {
                     tokens[index].type = "call";
-                    tokens[index].returnType = keywords[returnType]||"void";
+                    tokens[index].returnType = keywords[returnType] || "void";
                 }
             })
-            
+
             retorno += ` ${indentifier.value} (${args}) {\n`
             return retorno
         }
