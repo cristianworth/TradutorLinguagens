@@ -8,7 +8,6 @@ inicio
 fimalgoritmo
 
 
-
 algoritmo "Escolha Caso-Outrocaso"
 var 
    time: caractere
@@ -24,11 +23,65 @@ inicio
 fimalgoritmo
 
 
-algoritmo "Leia número"
+algoritmo "Leia número && Maiusc/Minusc"
 var
-    valor1 : Real
+   valor1 : Real
 inicio
    escreva ("Digite um valor (Real): ")
    leia(valor1)
-   escreva ("Valor informado: ",valor1)
+   escreva ("Valor Informado: ",valor1)
+   escreva (maiusc("maiusculo"))
+   escreva (minusc("MINUSCULO"))
 fimalgoritmo
+
+
+algoritmo "Se Senao Fimse"
+var
+   SaldoDisponivel : REAL
+   ValorDoSaque : REAL
+inicio
+      SaldoDisponivel := 1000 
+      ESCREVA ("Informe o valor do Saque: ")
+      LEIA (ValorDoSaque)
+      SE ValorDoSaque <= SaldoDisponivel ENTAO
+         SaldoDisponivel := SaldoDisponivel - ValorDoSaque
+         ESCREVAL ("Sacando R$ ", ValorDoSaque, ".")
+      SENAO
+         ESCREVAL ("O valor solicitado é maior que o valor disponível para saque!")
+      FIMSE
+
+      ESCREVAL ("Saldo disponível: R$ ", SaldoDisponivel)
+fimalgoritmo
+
+
+algoritmo "Enquanto"
+var
+   valorDigitado : REAL
+   soma : REAL
+inicio
+      soma := 0
+      ESCREVA ("Digite um valor para a soma: ")
+      LEIA (valorDigitado)
+
+      ENQUANTO valorDigitado <> 0 FACA
+          soma := soma + valorDigitado
+          ESCREVAL ("Total: ", soma)
+          ESCREVA ("Digite um valor para a soma: ")
+          LEIA (valorDigitado)
+      FIMENQUANTO
+
+      ESCREVAL ("Resultado: ", soma)
+fimalgoritmo
+
+
+algoritmo "Randi"
+var
+   mes1, mes2 :inteiro
+inicio
+   escreval("Soteando 2 meses")
+   mes1 <- randi(12) + 1
+   mes2 <- randi(12) + 1
+   escreval("")
+   escreval("Mes 1:", mes1)
+   escreval("Mes 2:", mes2)
+fimAlgoritmo
